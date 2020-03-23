@@ -11,7 +11,7 @@ const client = new google.auth.JWT(
     keys.private_key,
     ['https://www.googleapis.com/auth/spreadsheets']
 )
-const mainFolder = '/Users/mac/Documents/AT&T/'
+const mainFolder = __dirname + '/AT&T-Ready/'
 
 const store = []
 
@@ -59,8 +59,33 @@ const main = async (data) => {
         port: 5000,
         jsPath: './photoshopScripts/'
     })
-
+    const dateNow = new Date()
+    const options = {
+        month: 'long',
+        day: 'numeric',
+        timezone: 'UTC',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric'
+    }
+    const stringDateNow = dateNow.toLocaleString("en-US", options).replace(/:/g, '-')
+    const readyFolder = mainFolder + 'Ready for upload/'
+    const dateNowFolder = readyFolder + stringDateNow
+    
     app.init()
+
+    //create a directory if it doesn't exist and if data isn't empty
+    if (data.length > 0) {
+        if (!fs.existsSync(mainFolder)) {
+            fs.mkdirSync(mainFolder)
+        }
+    }
+
+    if (!fs.existsSync(readyFolder)) {
+        fs.mkdirSync(readyFolder)
+    }
+
+    fs.mkdirSync(dateNowFolder)
 
     data.forEach(async property => {
 
@@ -88,18 +113,21 @@ const main = async (data) => {
                 return
         }
 
-        const readyFolder = mainFolder + 'Ready for upload/'
+        // const readyFolder = mainFolder + 'Ready for upload/'
 
-        if (!fs.existsSync(readyFolder)) {
-            fs.mkdirSync(readyFolder)
-        }
+        // if (!fs.existsSync(readyFolder)) {
+        //     fs.mkdirSync(readyFolder)
+        // }
 
         //formatted string example: from => 'February 14th, 2020' to => 'February 14'
         const formattedEndDate = endDate.split(' ')[0] + ' ' + parseInt(endDate.split(' ')[1])
         const formattedTime = formattingTime(time)
         const readyFileNameWithoutEnding = `Event_Driven_${formattedEndDate}_${propertyName}_`
-        const readyFolderName = `${readyFolder}${startDate}_${propertyName}/`
+        let readyFolderName = `${dateNowFolder}${startDate}_${propertyName}/`
         //const folderWithTamplates = `${process.cwd()}/TEMPLATES/${event}/`
+
+        distinction ? readyFolderName = `${readyFolderName}(${distinction})` : readyFolderName = readyFolderName
+
 
         if (!fs.existsSync(readyFolderName)) {
             fs.mkdirSync(readyFolderName)

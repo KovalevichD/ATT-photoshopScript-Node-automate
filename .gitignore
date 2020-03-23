@@ -1,4 +1,5 @@
 keys.json
 photoshopScripts/photoshopScript.jsx
+AT&T-Ready
 node_modules/*
 !node_modules/adobe-node/
