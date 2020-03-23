@@ -1,0 +1,15 @@
+{
+  "name": "photoshopscripting",
+  "version": "1.0.0",
+  "description": "Automate work with Photoshop",
+  "main": "index.js",
+  "dependencies": {
+    "googleapis": "^47.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node index"
+  },
+  "author": "Kovalevich Dmitry",
+  "license": "ISC"
+}

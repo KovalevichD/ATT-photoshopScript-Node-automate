@@ -1,0 +1,4 @@
+keys.json
+photoshopScripts/photoshopScript.jsx
+node_modules/*
+!node_modules/adobe-node/
