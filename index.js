@@ -1,9 +1,7 @@
 const adobe = require("adobe-node")
 const fs = require('fs')
 const path = require('path')
-const {
-    google
-} = require('googleapis')
+const { google } = require('googleapis')
 const keys = require('./keys.json')
 const client = new google.auth.JWT(
     keys.client_email,
@@ -12,7 +10,6 @@ const client = new google.auth.JWT(
     ['https://www.googleapis.com/auth/spreadsheets']
 )
 const mainFolder = __dirname + '/AT&T-Ready/'
-
 const store = []
 
 client.authorize(async function (err, tokens) {
@@ -25,8 +22,6 @@ client.authorize(async function (err, tokens) {
         const data = await gsRun(client)
 
         main(data)
-
-
     }
 })
 
@@ -39,7 +34,7 @@ async function gsRun(cl) {
 
     const opt = {
         spreadsheetId: '1eP-VwcpLEpjUGiaAwgxJM0MbkIMIXCcFkeW9cDtO20Q',
-        range: 'Data!B2:H2'
+        range: 'Data!B2:H100'
     }
 
     let data = await gsApi.spreadsheets.values.get(opt)
@@ -113,21 +108,13 @@ const main = async (data) => {
                 return
         }
 
-        // const readyFolder = mainFolder + 'Ready for upload/'
-
-        // if (!fs.existsSync(readyFolder)) {
-        //     fs.mkdirSync(readyFolder)
-        // }
-
         //formatted string example: from => 'February 14th, 2020' to => 'February 14'
         const formattedEndDate = endDate.split(' ')[0] + ' ' + parseInt(endDate.split(' ')[1])
         const formattedTime = formattingTime(time)
         const readyFileNameWithoutEnding = `Event_Driven_${formattedEndDate}_${propertyName}_`
         let readyFolderName = `${dateNowFolder}${startDate}_${propertyName}/`
-        //const folderWithTamplates = `${process.cwd()}/TEMPLATES/${event}/`
 
         distinction ? readyFolderName = `${readyFolderName}(${distinction})` : readyFolderName = readyFolderName
-
 
         if (!fs.existsSync(readyFolderName)) {
             fs.mkdirSync(readyFolderName)
@@ -156,8 +143,6 @@ const main = async (data) => {
             arrOfGifs.push(pathGif)
         })
 
-        // properyItem.name = propertyName
-        // properyItem.startDate = startDate
         properyItem.time = formattedTime
         properyItem.endDate = formattedEndDate
         properyItem.spaceName = spaceName
@@ -166,6 +151,7 @@ const main = async (data) => {
 
         store.push(properyItem)
     })
+
     app.runScript(`photoshopScript.js`, {
         store: store
     })
